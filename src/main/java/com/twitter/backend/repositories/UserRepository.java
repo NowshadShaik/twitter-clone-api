@@ -1,0 +1,12 @@
+package com.twitter.backend.repositories;
+
+import java.util.List;
+import com.twitter.backend.modals.User;
+import org.springframework.data.mongodb.repository.MongoRepository;
+
+public interface UserRepository extends MongoRepository<User, String> {
+
+    User findByUsername(String username);
+    List<User> findAll();
+    List<User> findByUsernameContaining(String username);
+}
