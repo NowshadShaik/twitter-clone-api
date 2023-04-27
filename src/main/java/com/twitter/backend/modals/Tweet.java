@@ -14,7 +14,7 @@ import java.util.List;
 public class Tweet {
 
     @Id
-    private ObjectId id;
+    private String id;
     private User user;
     private String tweet;
     private int likes;
