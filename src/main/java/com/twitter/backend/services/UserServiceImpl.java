@@ -13,13 +13,8 @@ import java.util.List;
 public class UserServiceImpl implements UserService{
     Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
-//    @Autowired
-    private UserRepository userRepository;
-
     @Autowired
-    public UserServiceImpl (UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    private UserRepository userRepository;
 
     @Override
     public User createUser(User user) throws Exception {

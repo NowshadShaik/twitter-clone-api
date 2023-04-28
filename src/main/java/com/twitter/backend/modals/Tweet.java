@@ -15,7 +15,7 @@ public class Tweet {
 
     @Id
     private String id;
-    private User user;
+    private String username;
     private String tweet;
     private int likes;
     @CreatedDate
