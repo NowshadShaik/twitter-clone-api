@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/tweets")
-public class TweetController {
+public class TwitterController {
 
     @Autowired
     UserService userService;
