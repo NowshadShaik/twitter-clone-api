@@ -2,6 +2,8 @@ package com.twitter.backend.services;
 
 import com.twitter.backend.modals.Tweet;
 import com.twitter.backend.repositories.TweetRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,20 +12,27 @@ import java.util.UUID;
 
 @Service
 public class TweetServiceImpl implements TweetService {
+    Logger logger = LoggerFactory.getLogger(TweetServiceImpl.class);
 
     @Autowired
     TweetRepository tweetRepository;
 
     @Override
     public Tweet postTweet(Tweet tweet) {
+        logger.info("Posting Tweet by: " +tweet.getUsername());
         tweet.setId(UUID.randomUUID());
         tweet.setCreated_timeStamp(LocalDateTime.now());
-        return tweetRepository.save(tweet);
+        tweetRepository.save(tweet);
+        logger.info("Tweet poster successfully");
+        return tweet;
     }
 
     @Override
-    public void deleteTweet(Tweet tweet) {
+    public Tweet deleteTweet(Tweet tweet) {
+        logger.info("Deleting tweet....");
         tweetRepository.delete(tweet);
+        logger.info("Deleted successfully");
+        return tweet;
     }
 
 }

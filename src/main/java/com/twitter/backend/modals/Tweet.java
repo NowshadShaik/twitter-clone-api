@@ -20,7 +20,6 @@ public class Tweet {
     @NonNull
     private String tweet;
     private int likes;
-    @NonNull
     private LocalDateTime created_timeStamp;
     private List<Tweet> replies;
     @NonNull

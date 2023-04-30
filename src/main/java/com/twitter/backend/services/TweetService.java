@@ -7,5 +7,5 @@ public interface TweetService {
 
     Tweet postTweet(Tweet tweet);
 
-    void deleteTweet(Tweet tweet);
+    Tweet deleteTweet(Tweet tweet);
 }

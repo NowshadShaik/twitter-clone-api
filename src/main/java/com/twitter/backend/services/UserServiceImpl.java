@@ -19,21 +19,34 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public User createUser(User user) throws Exception {
-        logger.info("===Inside CreatUser===");
+        logger.info("Registering User "+user.getUsername());
         user.setUuid(UUID.randomUUID());
-        if(userRepository.findByUsername(user.getUsername()) != null)
+        if(userRepository.findByUsername(user.getUsername()) != null) {
+            logger.error("Username already exists please use a different username.");
             throw new Exception("Username already exists");
-        logger.info("Registration successfully...");
-        return userRepository.save(user);
+        } else {
+            userRepository.save(user);
+            logger.info("Registration successfully completed for: "+user.getUsername());
+        }
+        return user;
     }
 
     @Override
     public List<User> getAllUsers() {
+        logger.info("Getting list of all users.");
         return userRepository.findAll();
     }
 
     @Override
-    public List<User> getUserByUsername(String username) throws Exception {
+    public List<User> getUserByUsername(String username){
         return userRepository.findByUsernameContaining(username);
+    }
+
+    @Override
+    public User deleteUser(User user) {
+        logger.info("Deleting user" + user.getUsername());
+        userRepository.deleteByUsername(user.getUsername());
+        logger.info("User with "+user.getUsername() + " has been deleted successfully");
+        return user;
     }
 }

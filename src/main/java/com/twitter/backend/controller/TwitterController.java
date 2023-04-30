@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/tweets")
+@RequestMapping("/twitter")
 public class TwitterController {
 
     @Autowired
@@ -22,17 +22,23 @@ public class TwitterController {
     @Autowired
     TweetService tweetService;
 
-    @PostMapping("/register")
+    @PostMapping("/users/register")
     public ResponseEntity<Object> registerUser(@RequestBody User user) throws Exception {
-
         return new ResponseEntity<>(userService.createUser(user), HttpStatus.CREATED);
-
     }
 
-    @PostMapping("/tweet")
-    public ResponseEntity<Object> addTweet(@RequestBody Tweet tweet) throws Exception {
+    @PostMapping("/users/delete")
+    public ResponseEntity<Object> deleteUser(@RequestBody User user) {
+        return new ResponseEntity<>(userService.deleteUser(user), HttpStatus.ACCEPTED);
+    }
 
+    @PostMapping("/tweets/add")
+    public ResponseEntity<Object> addTweet(@RequestBody Tweet tweet){
         return new ResponseEntity<>(tweetService.postTweet(tweet), HttpStatus.ACCEPTED);
+    }
 
+    @PostMapping("/tweets/delete")
+    public ResponseEntity<Object> deleteTweet(@RequestBody Tweet tweet){
+        return new ResponseEntity<>(tweetService.deleteTweet(tweet), HttpStatus.ACCEPTED);
     }
 }
