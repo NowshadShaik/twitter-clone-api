@@ -14,8 +14,12 @@ import java.util.UUID;
 public class TweetServiceImpl implements TweetService {
     Logger logger = LoggerFactory.getLogger(TweetServiceImpl.class);
 
-    @Autowired
     TweetRepository tweetRepository;
+
+    @Autowired
+    public TweetServiceImpl(TweetRepository tweetRepo) {
+        this.tweetRepository=tweetRepo;
+    }
 
     @Override
     public Tweet postTweet(Tweet tweet) {

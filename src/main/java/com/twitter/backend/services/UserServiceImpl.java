@@ -14,8 +14,12 @@ import java.util.UUID;
 public class UserServiceImpl implements UserService{
     Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
-    @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    public UserServiceImpl(UserRepository userRepo) {
+        this.userRepository = userRepo;
+    }
 
     @Override
     public User createUser(User user) throws Exception {
