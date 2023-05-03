@@ -21,6 +21,7 @@ public class Tweet {
     private String tweet;
     private int likes;
     private LocalDateTime created_timeStamp;
+    private LocalDateTime updated_timeStamp;
     private List<Tweet> replies;
     @NonNull
     private String tweetTag;

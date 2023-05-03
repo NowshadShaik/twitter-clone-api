@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/twitter")
 public class TwitterController {
@@ -35,17 +37,22 @@ public class TwitterController {
     }
 
     @GetMapping("/tweets/listByUsername")
-    public ResponseEntity<Object> getTweetsByUser(@RequestHeader String username){
+    public ResponseEntity<Object> getTweetsByUser(@RequestHeader String username) {
         return new ResponseEntity<>(tweetService.getTweetsByUsername(username),HttpStatus.ACCEPTED);
     }
 
     @PostMapping("/tweets/add")
-    public ResponseEntity<Object> addTweet(@RequestBody Tweet tweet){
+    public ResponseEntity<Object> addTweet(@RequestBody Tweet tweet) {
         return new ResponseEntity<>(tweetService.postTweet(tweet), HttpStatus.ACCEPTED);
     }
 
+    @PostMapping("/tweets/update")
+    public ResponseEntity<Object> updateTwett(@RequestBody Tweet tweet) throws Exception {
+        return new ResponseEntity<>(tweetService.updateTweet(tweet),HttpStatus.ACCEPTED);
+    }
+
     @PostMapping("/tweets/delete")
-    public ResponseEntity<Object> deleteTweet(@RequestBody Tweet tweet){
+    public ResponseEntity<Object> deleteTweet(@RequestBody Tweet tweet) {
         return new ResponseEntity<>(tweetService.deleteTweet(tweet), HttpStatus.ACCEPTED);
     }
 }

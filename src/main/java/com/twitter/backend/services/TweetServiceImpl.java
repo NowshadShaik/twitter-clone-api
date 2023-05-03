@@ -55,5 +55,19 @@ public class TweetServiceImpl implements TweetService {
         return tweets;
     }
 
-
+    @Override
+    public Tweet updateTweet(Tweet tweet) throws Exception {
+        Tweet dbTweet = tweetRepository.findById(tweet.getId());
+        if(dbTweet!=null && tweet.getUsername().equals(dbTweet.getUsername())) {
+            logger.info("updating the tweet");
+            dbTweet.setTweet(tweet.getTweet());
+            dbTweet.setTweetTag(tweet.getTweetTag());
+            dbTweet.setUpdated_timeStamp(LocalDateTime.now());
+            tweetRepository.save(dbTweet);
+        } else {
+            logger.info("Tweet does not exists or this user is not the owner of tweet.");
+            throw new Exception("Tweet does not exists or you are not the owner.");
+        }
+        return dbTweet;
+    }
 }

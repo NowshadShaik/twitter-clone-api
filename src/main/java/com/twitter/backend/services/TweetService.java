@@ -11,4 +11,6 @@ public interface TweetService {
     Tweet deleteTweet(Tweet tweet);
 
     List<Tweet> getTweetsByUsername(String username);
+
+    Tweet updateTweet(Tweet tweet) throws Exception;
 }
