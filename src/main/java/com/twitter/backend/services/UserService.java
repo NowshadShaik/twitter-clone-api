@@ -7,7 +7,7 @@ import java.util.List;
 public interface UserService {
 
     User createUser(User user) throws Exception;
-    List<User> getAllUsers();
+    List<String> getAllUsers();
     List<User> getUserByUsername(String username) throws Exception;
     User deleteUser(User user);
 }

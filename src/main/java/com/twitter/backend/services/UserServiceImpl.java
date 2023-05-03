@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService{
@@ -36,9 +37,11 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public List<User> getAllUsers() {
+    public List<String> getAllUsers() {
         logger.info("Getting list of all users.");
-        return userRepository.findAll();
+        List<User> users= userRepository.findAll();
+        List<String> usernames = users.stream().map(u -> u.getUsername()+","+u.getEmail()).toList();
+        return usernames;
     }
 
     @Override
