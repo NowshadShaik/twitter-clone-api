@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -16,9 +17,12 @@ public class TweetServiceImpl implements TweetService {
 
     TweetRepository tweetRepository;
 
+    UserService userService;
+
     @Autowired
-    public TweetServiceImpl(TweetRepository tweetRepo) {
+    public TweetServiceImpl(TweetRepository tweetRepo, UserService userService) {
         this.tweetRepository=tweetRepo;
+        this.userService=userService;
     }
 
     @Override
@@ -38,5 +42,18 @@ public class TweetServiceImpl implements TweetService {
         logger.info("Deleted successfully");
         return tweet;
     }
+
+    @Override
+    public List<Tweet> getTweetsByUsername(String username) {
+        List<Tweet> tweets = null;
+        if(userService.isUsernameExists(username)) {
+            logger.info("getting tweets for username: "+username);
+            tweets = tweetRepository.findByUsername(username);
+        } else {
+            logger.info("User with username: " + username + " does not exists");
+        }
+        return tweets;
+    }
+
 
 }

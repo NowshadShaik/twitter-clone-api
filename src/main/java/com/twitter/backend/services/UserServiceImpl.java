@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService{
@@ -26,12 +25,12 @@ public class UserServiceImpl implements UserService{
     public User createUser(User user) throws Exception {
         logger.info("Registering User "+user.getUsername());
         user.setUuid(UUID.randomUUID());
-        if(userRepository.findByUsername(user.getUsername()) != null) {
-            logger.error("Username already exists please use a different username.");
-            throw new Exception("Username already exists");
-        } else {
+        if(!isUsernameExists(user.getUsername())) {
             userRepository.save(user);
             logger.info("Registration successfully completed for: "+user.getUsername());
+        } else {
+            logger.error("Username already exists please use a different username.");
+            throw new Exception("Username already exists");
         }
         return user;
     }
@@ -55,5 +54,11 @@ public class UserServiceImpl implements UserService{
         userRepository.deleteByUsername(user.getUsername());
         logger.info("User with "+user.getUsername() + " has been deleted successfully");
         return user;
+    }
+
+    @Override
+    public boolean isUsernameExists(String username) {
+        logger.info("Verifying if users exists.");
+        return userRepository.findByUsername(username) != null;
     }
 }

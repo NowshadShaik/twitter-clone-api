@@ -34,6 +34,11 @@ public class TwitterController {
         return new ResponseEntity<>(userService.deleteUser(user), HttpStatus.ACCEPTED);
     }
 
+    @GetMapping("/tweets/listByUsername")
+    public ResponseEntity<Object> getTweetsByUser(@RequestHeader String username){
+        return new ResponseEntity<>(tweetService.getTweetsByUsername(username),HttpStatus.ACCEPTED);
+    }
+
     @PostMapping("/tweets/add")
     public ResponseEntity<Object> addTweet(@RequestBody Tweet tweet){
         return new ResponseEntity<>(tweetService.postTweet(tweet), HttpStatus.ACCEPTED);

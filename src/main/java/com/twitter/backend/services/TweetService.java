@@ -1,11 +1,14 @@
 package com.twitter.backend.services;
 
 import com.twitter.backend.modals.Tweet;
-import org.bson.types.ObjectId;
+
+import java.util.List;
 
 public interface TweetService {
 
     Tweet postTweet(Tweet tweet);
 
     Tweet deleteTweet(Tweet tweet);
+
+    List<Tweet> getTweetsByUsername(String username);
 }
