@@ -1,16 +1,24 @@
 package com.twitter.backend.config;
 
+import com.twitter.backend.services.UserDetailService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
 public class securityConfiguration {
+
+    @Autowired
+    private UserDetailService userDetailService;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -28,5 +36,42 @@ public class securityConfiguration {
         httpSecurity.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         return httpSecurity.build();
+    }
+
+    /**
+     * Using this below bean the given usernames & passwords get added to in memory user details manager for spring security.
+     * But we will be taking our users from DB so this we will not use this is just FYI
+     */
+//    @Bean
+//    public UserDetailsService userDetailsService() {
+//
+//        UserDetails user = User
+//                .withDefaultPasswordEncoder()
+//                .username("username")
+//                .password("password")
+//                .roles("USER")
+//                .build();
+//
+//        UserDetails user0 = User
+//                .withDefaultPasswordEncoder()
+//                .username("username-0")
+//                .password("password-0")
+//                .roles("USER")
+//                .build();
+//
+//        return new InMemoryUserDetailsManager(user, user0);
+//    }
+
+    /**
+     * Using below bean we provide a AuthenticationProvider, UserDetailsService
+     */
+    @Bean
+    public AuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+
+        provider.setPasswordEncoder(NoOpPasswordEncoder.getInstance());    // No password encoding
+        provider.setUserDetailsService(userDetailService);    // We will pass our own User detail service to this config.
+
+        return provider;
     }
 }
