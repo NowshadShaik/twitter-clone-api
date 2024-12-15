@@ -11,7 +11,7 @@ import java.util.UUID;
 
 @Data
 @AllArgsConstructor
-@Document(collection = "Users")
+@Document(collection = "users")
 public class User {
 
     @Id

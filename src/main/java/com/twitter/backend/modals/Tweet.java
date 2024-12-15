@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Data
-@Document(collection = "Tweets")
+@Document(collection = "tweets")
 public class Tweet {
 
     @Id

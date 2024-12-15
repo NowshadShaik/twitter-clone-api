@@ -23,11 +23,11 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public User createUser(User user) throws Exception {
-        logger.info("Registering User "+user.getUsername());
+        logger.info("Registering User {}", user.getUsername());
         user.setUuid(UUID.randomUUID());
         if(!isUsernameExists(user.getUsername())) {
             userRepository.save(user);
-            logger.info("Registration successfully completed for: "+user.getUsername());
+            logger.info("Registration successfully completed for: {}", user.getUsername());
         } else {
             logger.error("Username already exists please use a different username.");
             throw new Exception("Username already exists");
@@ -50,9 +50,9 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public User deleteUser(User user) {
-        logger.info("Deleting user" + user.getUsername());
+        logger.info("Deleting user{}", user.getUsername());
         userRepository.deleteByUsername(user.getUsername());
-        logger.info("User with "+user.getUsername() + " has been deleted successfully");
+        logger.info("User with {} has been deleted successfully", user.getUsername());
         return user;
     }
 

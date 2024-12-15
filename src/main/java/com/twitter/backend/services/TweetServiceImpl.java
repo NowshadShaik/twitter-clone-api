@@ -27,11 +27,12 @@ public class TweetServiceImpl implements TweetService {
 
     @Override
     public Tweet postTweet(Tweet tweet) {
-        logger.info("Posting Tweet by: " +tweet.getUsername());
+        logger.info("Posting Tweet by: {}", tweet.getUsername());
         tweet.setId(UUID.randomUUID());
         tweet.setCreated_timeStamp(LocalDateTime.now());
+        tweet.setUpdated_timeStamp(LocalDateTime.now());
         tweetRepository.save(tweet);
-        logger.info("Tweet poster successfully");
+        logger.info("Tweet posted successfully");
         return tweet;
     }
 
@@ -47,10 +48,10 @@ public class TweetServiceImpl implements TweetService {
     public List<Tweet> getTweetsByUsername(String username) {
         List<Tweet> tweets = null;
         if(userService.isUsernameExists(username)) {
-            logger.info("getting tweets for username: "+username);
+            logger.info("getting tweets for username: {}", username);
             tweets = tweetRepository.findByUsername(username);
         } else {
-            logger.info("User with username: " + username + " does not exists");
+            logger.info("User with username: {} does not exists", username);
         }
         return tweets;
     }

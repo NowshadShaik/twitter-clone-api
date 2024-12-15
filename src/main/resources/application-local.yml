@@ -1,0 +1,6 @@
+############# Remote Mongodb Atlas #############
+spring:
+  data:
+    mongodb:
+      uri: mongodb+srv://twitterApp:1veux4AZenNIEvxY@cluster-twitter-clone.xzc1j.mongodb.net/?retryWrites=true&w=majority&appName=Cluster-Twitter-Clone
+      database: Twitter-Clone

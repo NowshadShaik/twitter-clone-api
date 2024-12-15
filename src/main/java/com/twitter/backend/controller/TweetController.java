@@ -1,44 +1,28 @@
 package com.twitter.backend.controller;
 
 import com.twitter.backend.modals.Tweet;
-import com.twitter.backend.modals.User;
 import com.twitter.backend.services.TweetService;
-import com.twitter.backend.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.UUID;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @RestController
 @RequestMapping("/twitter")
-public class TwitterController {
-
-    @Autowired
-    UserService userService;
+public class TweetController {
 
     @Autowired
     TweetService tweetService;
 
-    @GetMapping("/users/listUsers")
-    public ResponseEntity<Object> getAllUsers() {
-        return new ResponseEntity<>(userService.getAllUsers(),HttpStatus.ACCEPTED);
-    }
-
-    @PostMapping("/users/register")
-    public ResponseEntity<Object> registerUser(@RequestBody User user) throws Exception {
-        return new ResponseEntity<>(userService.createUser(user), HttpStatus.CREATED);
-    }
-
-    @PostMapping("/users/delete")
-    public ResponseEntity<Object> deleteUser(@RequestBody User user) {
-        return new ResponseEntity<>(userService.deleteUser(user), HttpStatus.ACCEPTED);
-    }
 
     @GetMapping("/tweets/listByUsername")
     public ResponseEntity<Object> getTweetsByUser(@RequestHeader String username) {
-        return new ResponseEntity<>(tweetService.getTweetsByUsername(username),HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(tweetService.getTweetsByUsername(username), HttpStatus.ACCEPTED);
     }
 
     @PostMapping("/tweets/add")
@@ -47,7 +31,7 @@ public class TwitterController {
     }
 
     @PostMapping("/tweets/update")
-    public ResponseEntity<Object> updateTwett(@RequestBody Tweet tweet) throws Exception {
+    public ResponseEntity<Object> updateTweet(@RequestBody Tweet tweet) throws Exception {
         return new ResponseEntity<>(tweetService.updateTweet(tweet),HttpStatus.ACCEPTED);
     }
 

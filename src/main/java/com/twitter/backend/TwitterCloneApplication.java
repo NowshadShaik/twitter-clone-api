@@ -6,12 +6,12 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class BackendApplication {
+public class TwitterCloneApplication {
 
 	public static void main(String[] args) throws Exception {
-		Logger logger = LoggerFactory.getLogger(BackendApplication.class);
-		SpringApplication.run(BackendApplication.class, args);
-		logger.info("<-------------------------------Backend started------------------------------->");
+		Logger logger = LoggerFactory.getLogger(TwitterCloneApplication.class);
+		SpringApplication.run(TwitterCloneApplication.class, args);
+		logger.info("<-------------------------------Application Started------------------------------->");
 
 	}
 
