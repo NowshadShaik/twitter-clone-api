@@ -47,7 +47,7 @@ public class TweetServiceImpl implements TweetService {
     @Override
     public List<Tweet> getTweetsByUsername(String username) {
         List<Tweet> tweets = null;
-        if(userService.isUsernameExists(username)) {
+        if(userService.isExistingValidUser(username)) {
             logger.info("getting tweets for username: {}", username);
             tweets = tweetRepository.findByUsername(username);
         } else {

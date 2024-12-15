@@ -14,5 +14,5 @@ public interface UserService {
 
     User deleteUser(User user);
 
-    boolean isUsernameExists(String username);
+    boolean isExistingValidUser(String username);
 }

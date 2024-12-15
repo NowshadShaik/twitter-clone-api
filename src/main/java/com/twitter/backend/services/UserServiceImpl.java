@@ -25,7 +25,7 @@ public class UserServiceImpl implements UserService{
     public User createUser(User user) throws Exception {
         logger.info("Registering User {}", user.getUsername());
         user.setUuid(UUID.randomUUID());
-        if(!isUsernameExists(user.getUsername())) {
+        if(!isExistingValidUser(user.getUsername())) {
             userRepository.save(user);
             logger.info("Registration successfully completed for: {}", user.getUsername());
         } else {
@@ -50,14 +50,20 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public User deleteUser(User user) {
-        logger.info("Deleting user{}", user.getUsername());
-        userRepository.deleteByUsername(user.getUsername());
-        logger.info("User with {} has been deleted successfully", user.getUsername());
+
+        if(isExistingValidUser(user.getUsername())) {
+            logger.info("Deleting user{}", user.getUsername());
+            userRepository.deleteByUsername(user.getUsername());
+            logger.info("User with {} has been deleted successfully", user.getUsername());
+        } else {
+            logger.error("Invalid user name: {} does not exist", user.getUsername());
+            return null;
+        }
         return user;
     }
 
     @Override
-    public boolean isUsernameExists(String username) {
+    public boolean isExistingValidUser(String username) {
         logger.info("Verifying if users exists.");
         return userRepository.findByUsername(username) != null;
     }

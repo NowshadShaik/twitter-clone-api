@@ -26,6 +26,13 @@ public class UserController {
 
     @PostMapping("/users/delete")
     public ResponseEntity<Object> deleteUser(@RequestBody User user) {
+
+        User savedUser = userService.deleteUser(user);
+
+        if(savedUser == null) {
+            return new ResponseEntity<>("Invalid user name: " + user.getUsername() + " does not exist", HttpStatus.BAD_REQUEST);
+        }
+
         return new ResponseEntity<>(userService.deleteUser(user), HttpStatus.ACCEPTED);
     }
 }
