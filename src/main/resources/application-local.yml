@@ -4,3 +4,7 @@ spring:
     mongodb:
       uri: mongodb+srv://twitterApp:1veux4AZenNIEvxY@cluster-twitter-clone.xzc1j.mongodb.net/?retryWrites=true&w=majority&appName=Cluster-Twitter-Clone
       database: Twitter-Clone
+  security:
+    user:
+      name: twitter
+      password: twitter-api

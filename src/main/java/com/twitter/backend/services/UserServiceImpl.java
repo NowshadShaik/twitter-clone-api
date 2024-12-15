@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService{
     public List<String> getAllUsers() {
         logger.info("Getting list of all users.");
         List<User> users= userRepository.findAll();
-        List<String> usernames = users.stream().map(u -> u.getUsername()+","+u.getEmail()).toList();
+        List<String> usernames = users.stream().map(u -> u.getUsername()+", "+u.getEmail()).toList();
         return usernames;
     }
 
