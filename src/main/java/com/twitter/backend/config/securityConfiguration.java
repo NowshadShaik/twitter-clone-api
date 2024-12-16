@@ -10,7 +10,7 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -69,7 +69,7 @@ public class securityConfiguration {
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
 
-        provider.setPasswordEncoder(NoOpPasswordEncoder.getInstance());    // No password encoding
+        provider.setPasswordEncoder(new BCryptPasswordEncoder(12));    // No password encoding
         provider.setUserDetailsService(userDetailService);    // We will pass our own User detail service to this config.
 
         return provider;

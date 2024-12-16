@@ -5,6 +5,7 @@ import com.twitter.backend.repositories.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,20 +15,28 @@ import java.util.UUID;
 public class UserServiceImpl implements UserService{
     Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
     public UserServiceImpl(UserRepository userRepo) {
         this.userRepository = userRepo;
+        this.bCryptPasswordEncoder = new BCryptPasswordEncoder(12);
     }
 
     @Override
     public User createUser(User user) throws Exception {
+
         logger.info("Registering User {}", user.getUsername());
         user.setUuid(UUID.randomUUID());
+
         if(!isExistingValidUser(user.getUsername())) {
+
+            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
             userRepository.save(user);
             logger.info("Registration successfully completed for: {}", user.getUsername());
+
         } else {
             logger.error("Username already exists please use a different username.");
             throw new Exception("Username already exists");
