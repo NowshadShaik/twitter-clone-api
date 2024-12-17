@@ -21,10 +21,11 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<Object> registerUser(@RequestBody User user) {
+        User registeredUser = null;
         try {
-            userService.createUser(user);
+            registeredUser = userService.createUser(user);
         } catch (Exception e) {
-            return new ResponseEntity<>("Username already exists: " + user.getUsername(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Username already exists: " + registeredUser, HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
