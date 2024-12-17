@@ -5,6 +5,9 @@ import com.twitter.backend.repositories.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +23,12 @@ public class UserService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
+    AuthenticationManager authenticationManager;
+
+    @Autowired
+    JWTService jwtService;
+
+    @Autowired
     public UserService(UserRepository userRepo) {
         this.userRepository = userRepo;
         this.bCryptPasswordEncoder = new BCryptPasswordEncoder(12);
@@ -27,7 +36,7 @@ public class UserService {
 
     public User createUser(User user) throws Exception {
 
-        logger.info("Registering User {}", user.getUsername());
+        logger.info("Registering User: {}", user.getUsername());
         user.setUuid(UUID.randomUUID());
 
         if(!isExistingValidUser(user.getUsername())) {
@@ -70,5 +79,16 @@ public class UserService {
     public boolean isExistingValidUser(String username) {
         logger.info("Verifying if users exists.");
         return userRepository.findByUsername(username) != null;
+    }
+
+    public String login(User user) {
+        Authentication authentication = authenticationManager
+                .authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
+
+        if(authentication.isAuthenticated()) {
+            String token = jwtService.generateToken(user.getUsername());
+            return "Logged in with user: " + user.getUsername() + " \nToken: " + token;
+        }
+        return "Login Failed";
     }
 }

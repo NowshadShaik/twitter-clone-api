@@ -4,9 +4,11 @@ import com.twitter.backend.services.UserDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -36,6 +38,24 @@ public class securityConfiguration {
     }
 
     /**
+     * Using below bean we provide a AuthenticationProvider, UserDetailsService
+     */
+    @Bean
+    public AuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+
+        provider.setPasswordEncoder(new BCryptPasswordEncoder(12));    // No password encoding
+        provider.setUserDetailsService(userDetailService);    // We will pass our own User detail service to this config.
+
+        return provider;
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+        return configuration.getAuthenticationManager();
+    }
+
+    /**
      * Using this below bean the given usernames & passwords get added to in memory user details manager for spring security.
      * But we will be taking our users from DB so this we will not use this is just FYI
      */
@@ -58,17 +78,4 @@ public class securityConfiguration {
 //
 //        return new InMemoryUserDetailsManager(user, user0);
 //    }
-
-    /**
-     * Using below bean we provide a AuthenticationProvider, UserDetailsService
-     */
-    @Bean
-    public AuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-
-        provider.setPasswordEncoder(new BCryptPasswordEncoder(12));    // No password encoding
-        provider.setUserDetailsService(userDetailService);    // We will pass our own User detail service to this config.
-
-        return provider;
-    }
 }

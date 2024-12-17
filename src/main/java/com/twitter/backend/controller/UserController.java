@@ -16,7 +16,11 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<Object> login(@RequestBody User user) {
-        return new ResponseEntity<>("Logged in as user: " + user.getUsername(), HttpStatus.ACCEPTED);
+        String login = userService.login(user);
+        if(!login.equals("Login Failed")) {
+            return new ResponseEntity<>(login, HttpStatus.ACCEPTED);
+        }
+        return new ResponseEntity<>("Login failed for user: " + user.getUsername(), HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping("/register")
@@ -25,9 +29,9 @@ public class UserController {
         try {
             registeredUser = userService.createUser(user);
         } catch (Exception e) {
-            return new ResponseEntity<>("Username already exists: " + registeredUser, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Username already exists: " + user.getUsername(), HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(user, HttpStatus.CREATED);
+        return new ResponseEntity<>(registeredUser, HttpStatus.CREATED);
     }
 
     @PostMapping("/users/delete")
