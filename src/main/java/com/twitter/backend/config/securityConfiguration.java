@@ -1,5 +1,6 @@
 package com.twitter.backend.config;
 
+import com.twitter.backend.filter.JwtFilter;
 import com.twitter.backend.services.UserDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -14,6 +15,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -21,6 +23,9 @@ public class securityConfiguration {
 
     @Autowired
     private UserDetailService userDetailService;
+
+    @Autowired
+    private JwtFilter jwtFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -33,7 +38,8 @@ public class securityConfiguration {
 //                .formLogin(Customizer.withDefaults())
                 .httpBasic(Customizer.withDefaults())                                                  // We also remove authentication for basic http from postman
                 .sessionManagement(session ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))                //No session is maintained mitigating the CSRF issue.
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))                // No session is maintained mitigating the CSRF issue.
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)                // jwtFilter will get called right before calling the usernamePasswordAuthenticationFilter
                 .build();
     }
 
