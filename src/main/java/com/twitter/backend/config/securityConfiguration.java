@@ -23,19 +23,16 @@ public class securityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 
-        httpSecurity.csrf(customizer -> customizer.disable());  // Disables csrf but also removes all auth.
-
-        httpSecurity.authorizeHttpRequests(request -> request.anyRequest().authenticated());  // Enabling authentication for everything. Not csrf. But this denies the login page as well
-
-        // httpSecurity.formLogin(Customizer.withDefaults());  // we remove authentication for form login page.
-
-        httpSecurity.httpBasic(Customizer.withDefaults());  // We also remove authentication for basic http from postman
-
-        // This makes our session stateless means no more session time and we have separate session with Id for every request means no more CSRF issue.
-        // but this will make it ask for creds for every page every time, Because it is a new session everytime. So remove form Login on line 21. But httpBasic from line 22 will still give you pop up for creds
-        httpSecurity.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-
-        return httpSecurity.build();
+        return httpSecurity
+                .csrf(csrf -> csrf.disable())                                  // Disables csrf but also removes all auth.
+                .authorizeHttpRequests(request -> request
+                        .requestMatchers("twitter/register", "twitter/login").permitAll()         // Permits given resources without authentication
+                        .anyRequest().authenticated())                                                 // Enabling authentication for everything. Not csrf. But this denies the login page as well
+//                .formLogin(Customizer.withDefaults())
+                .httpBasic(Customizer.withDefaults())                                                  // We also remove authentication for basic http from postman
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))                //No session is maintained mitigating the CSRF issue.
+                .build();
     }
 
     /**

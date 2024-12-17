@@ -5,6 +5,10 @@ spring:
       uri: mongodb+srv://twitterApp:1veux4AZenNIEvxY@cluster-twitter-clone.xzc1j.mongodb.net/?retryWrites=true&w=majority&appName=Cluster-Twitter-Clone
       database: Twitter-Clone
 
+#logging:
+#  level:
+#    org.springframework.security: DEBUG
+
 devops:
   username: devops
   password: '$2a$12$m0C1UVjVQ/htIDKgDvK71eo/ZC3Rg6jkyOABXtrVUn0GRwDl4qLp2'

@@ -14,14 +14,19 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    @GetMapping("/users/listUsers")
-    public ResponseEntity<Object> getAllUsers() {
-        return new ResponseEntity<>(userService.getAllUsers(),HttpStatus.ACCEPTED);
+    @PostMapping("/login")
+    public ResponseEntity<Object> login(@RequestBody User user) {
+        return new ResponseEntity<>("Logged in as user: " + user.getUsername(), HttpStatus.ACCEPTED);
     }
 
-    @PostMapping("/users/register")
-    public ResponseEntity<Object> registerUser(@RequestBody User user) throws Exception {
-        return new ResponseEntity<>(userService.createUser(user), HttpStatus.CREATED);
+    @PostMapping("/register")
+    public ResponseEntity<Object> registerUser(@RequestBody User user) {
+        try {
+            userService.createUser(user);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Username already exists: " + user.getUsername(), HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
     @PostMapping("/users/delete")
@@ -34,5 +39,10 @@ public class UserController {
         }
 
         return new ResponseEntity<>(userService.deleteUser(user), HttpStatus.ACCEPTED);
+    }
+
+    @GetMapping("/users/listUsers")
+    public ResponseEntity<Object> getAllUsers() {
+        return new ResponseEntity<>(userService.getAllUsers(),HttpStatus.ACCEPTED);
     }
 }
