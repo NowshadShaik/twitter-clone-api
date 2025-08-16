@@ -2,7 +2,12 @@
 spring:
   data:
     mongodb:
-      uri: mongodb+srv://twitterApp:1veux4AZenNIEvxY@cluster-twitter-clone.xzc1j.mongodb.net/?retryWrites=true&w=majority&appName=Cluster-Twitter-Clone
+      # Below uri works with DB admin creds stored in admin DB. It can work with normal app user too
+      # uri: mongodb://admin:password@localhost:27017/Twitter-Clone?authSource=admin
+      host: localhost
+      port: 27017
+      username: twitterUser
+      password: twitterPass
       database: Twitter-Clone
 
 #logging:

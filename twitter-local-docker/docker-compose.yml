@@ -1,0 +1,18 @@
+version: '3.8'
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb-twitter
+    ports:
+      - "27017:27017"
+    environment:
+     # Below details create a root user and password which will be saved in separate authentication database called admin
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+    volumes:
+      - mongo-data:/data/db
+      # Below script is to create app username and password in DB
+      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+
+volumes:
+    mongo-data:
