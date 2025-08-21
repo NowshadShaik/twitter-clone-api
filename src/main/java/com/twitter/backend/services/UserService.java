@@ -20,7 +20,8 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
     AuthenticationManager authenticationManager;
@@ -31,7 +32,6 @@ public class UserService {
     @Autowired
     public UserService(UserRepository userRepo) {
         this.userRepository = userRepo;
-        this.bCryptPasswordEncoder = new BCryptPasswordEncoder(12);
     }
 
     public User createUser(User user) throws Exception {

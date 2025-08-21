@@ -24,6 +24,7 @@ public class JWTService {
     public JWTService() {
         try {
             KeyGenerator keyGen = KeyGenerator.getInstance("HmacSHA256");
+            //This will generate a new secret everytime server restarts. So all tokens generated before cannot be validated anymore
             SecretKey secret = keyGen.generateKey();
             secretKey = Base64.getEncoder().encodeToString(secret.getEncoded());
         } catch (NoSuchAlgorithmException e) {
@@ -40,7 +41,7 @@ public class JWTService {
                 .add(claims)
                 .subject(username)
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + (60 * 1000 * 10)))
+                .expiration(new Date(System.currentTimeMillis() + (60 * 1000 * 10))) // Token will expire in 10 mins
                 .and()
                 .signWith(getKey())
                 .compact();
@@ -51,16 +52,16 @@ public class JWTService {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public static String extractUsername(String token) {
+    public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
-    private static <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+    private <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
 
-    private static Claims extractAllClaims(String token) {
+    private Claims extractAllClaims(String token) {
         return Jwts.parser()
                 .verifyWith(getKey())
                 .build().parseSignedClaims(token)

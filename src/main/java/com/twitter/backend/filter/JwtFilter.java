@@ -26,6 +26,9 @@ public class JwtFilter extends OncePerRequestFilter {
     @Autowired
     ApplicationContext context;
 
+    @Autowired
+    UserDetailService userDetailService;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
@@ -33,14 +36,14 @@ public class JwtFilter extends OncePerRequestFilter {
         String token = null;
         String username = null;
 
-        if(authHeader != null && authHeader.startsWith("Bearer")) {
+        if(authHeader != null && authHeader.startsWith("Bearer ")) {
             token = authHeader.substring(7);
-            username = JWTService.extractUsername(token);
+            username = jwtService.extractUsername(token);
         }
 
         if(username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-            UserDetails userDetails = context.getBean(UserDetailService.class).loadUserByUsername(username);
+            UserDetails userDetails = userDetailService.loadUserByUsername(username);
             if(jwtService.validateToken(token, userDetails)) {
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
                         new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
