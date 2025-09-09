@@ -1,9 +1,9 @@
 package com.twitter.backend.services;
 
+import com.twitter.backend.Utils.AuthenticationUtils;
 import com.twitter.backend.modals.User;
 import com.twitter.backend.repositories.UserRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,45 +15,44 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
+@Slf4j
 public class UserService {
-    Logger logger = LoggerFactory.getLogger(UserService.class);
 
-    private final UserRepository userRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
-    AuthenticationManager authenticationManager;
+    private AuthenticationManager authenticationManager;
 
     @Autowired
-    JWTService jwtService;
+    private AuthenticationUtils authenticationUtils;
 
     @Autowired
-    public UserService(UserRepository userRepo) {
-        this.userRepository = userRepo;
-    }
+    private JWTService jwtService;
 
     public User createUser(User user) throws Exception {
 
-        logger.info("Registering User: {}", user.getUsername());
+        log.info("Registering User: {}", user.getUsername());
         user.setUuid(UUID.randomUUID());
 
         if(!isExistingValidUser(user.getUsername())) {
 
             user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
             userRepository.save(user);
-            logger.info("Registration successfully completed for: {}", user.getUsername());
+            log.info("Registration successfully completed for: {}", user.getUsername());
 
         } else {
-            logger.error("Username already exists please use a different username.");
+            log.error("Username already exists please use a different username.");
             throw new Exception("Username already exists");
         }
         return user;
     }
 
     public List<String> getAllUsers() {
-        logger.info("Getting list of all users.");
+        log.info("Getting list of all users.");
         List<User> users= userRepository.findAll();
         List<String> userNames = users.stream().map(u -> u.getUsername()+", "+u.getEmail()).toList();
         return userNames;
@@ -63,21 +62,20 @@ public class UserService {
         return userRepository.findByUsernameContaining(username);
     }
 
-    public User deleteUser(User user) {
+    public boolean deleteUser(String username) {
 
-        if(isExistingValidUser(user.getUsername())) {
-            logger.info("Deleting user{}", user.getUsername());
-            userRepository.deleteByUsername(user.getUsername());
-            logger.info("User with {} has been deleted successfully", user.getUsername());
-        } else {
-            logger.error("Invalid user name: {} does not exist", user.getUsername());
-            return null;
+        if(!authenticationUtils.getCurrAuthenticatedUser().equals(username)) {
+            return false;
         }
-        return user;
+
+        log.info("Deleting user with username: {}", username);
+        userRepository.deleteByUsername(username);
+        log.info("User with {} has been deleted successfully", username);
+        return true;
     }
 
     public boolean isExistingValidUser(String username) {
-        logger.info("Verifying if users exists.");
+        log.info("Verifying if users exists.");
         return userRepository.findByUsername(username) != null;
     }
 

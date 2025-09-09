@@ -7,15 +7,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/twitter")
+@RequestMapping("/users")
 public class UserController {
 
     @Autowired
     UserService userService;
 
     @PostMapping("/login")
-    public ResponseEntity<Object> login(@RequestBody User user) {
+    public ResponseEntity<String> login(@RequestBody User user) {
         String login = userService.login(user);
         if(!login.equals("Login Failed")) {
             return new ResponseEntity<>(login, HttpStatus.ACCEPTED);
@@ -24,7 +26,7 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Object> registerUser(@RequestBody User user) {
+    public ResponseEntity<?> registerUser(@RequestBody User user) {
         User registeredUser = null;
         try {
             registeredUser = userService.createUser(user);
@@ -34,20 +36,17 @@ public class UserController {
         return new ResponseEntity<>(registeredUser, HttpStatus.CREATED);
     }
 
-    @PostMapping("/users/delete")
-    public ResponseEntity<Object> deleteUser(@RequestBody User user) {
+    @DeleteMapping("/delete")
+    public ResponseEntity<?> deleteUser(@RequestParam("user") String username) {
 
-        User savedUser = userService.deleteUser(user);
-
-        if(savedUser == null) {
-            return new ResponseEntity<>("Invalid user name: " + user.getUsername() + " does not exist", HttpStatus.BAD_REQUEST);
+        if(userService.deleteUser(username)) {
+            return new ResponseEntity<>(String.format("User with username: %s is deleted successfully", username), HttpStatus.ACCEPTED);
         }
-
-        return new ResponseEntity<>(userService.deleteUser(user), HttpStatus.ACCEPTED);
+        return new ResponseEntity<>("Invalid user name: " + username + " or You are not the owner of this account", HttpStatus.BAD_REQUEST);
     }
 
-    @GetMapping("/users/listUsers")
-    public ResponseEntity<Object> getAllUsers() {
+    @GetMapping("/listUsers")
+    public ResponseEntity<List<String>> getAllUsers() {
         return new ResponseEntity<>(userService.getAllUsers(),HttpStatus.ACCEPTED);
     }
 }

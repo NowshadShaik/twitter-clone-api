@@ -37,7 +37,7 @@ public class securityConfiguration {
         return httpSecurity
                 .csrf(csrf -> csrf.disable())                                 // Disables csrf but also removes all auth.
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("twitter/register", "twitter/login").permitAll()     // Permits given resources without authentication
+                        .requestMatchers("/users/register", "/users/login").permitAll()       // Permits given resources without authentication
                         .anyRequest().authenticated())                                                 // Enabling authentication for everything.
 //                .formLogin(Customizer.withDefaults())                                                // This form login is for Spring's default login page. This is not needed for REST API's
                 .httpBasic(Customizer.withDefaults())                                                  // We also remove authentication for basic http from postman. This will not create JWT's

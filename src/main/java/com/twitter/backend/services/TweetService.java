@@ -1,70 +1,88 @@
 package com.twitter.backend.services;
 
+import com.twitter.backend.Utils.AuthenticationUtils;
 import com.twitter.backend.modals.Tweet;
 import com.twitter.backend.repositories.TweetRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@Slf4j
 public class TweetService {
-    Logger logger = LoggerFactory.getLogger(TweetService.class);
-
-    TweetRepository tweetRepository;
-
-    UserService userService;
 
     @Autowired
-    public TweetService(TweetRepository tweetRepo, UserService userService) {
-        this.tweetRepository=tweetRepo;
-        this.userService=userService;
-    }
+    private TweetRepository tweetRepository;
 
-    public Tweet postTweet(Tweet tweet) {
-        logger.info("Posting Tweet by: {}", tweet.getUsername());
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private AuthenticationUtils authenticationUtils;
+
+    public boolean postTweet(Tweet tweet) {
+
+        if(!authenticationUtils.getCurrAuthenticatedUser().equals(tweet.getUsername()))
+            return false;
+
+        log.info("Posting Tweet by: {}", tweet.getUsername());
+
         tweet.setId(UUID.randomUUID());
         tweet.setCreated_timeStamp(LocalDateTime.now());
         tweet.setUpdated_timeStamp(LocalDateTime.now());
         tweetRepository.save(tweet);
-        logger.info("Tweet posted successfully");
-        return tweet;
+
+        log.info("Tweet posted successfully");
+        return true;
     }
 
-    public Tweet deleteTweet(Tweet tweet) {
-        logger.info("Deleting tweet....");
+    public boolean deleteTweet(Tweet tweet) {
+
+        if(!authenticationUtils.getCurrAuthenticatedUser().equals(tweet.getUsername()))
+            return false;
+
+        log.info("Deleting tweet....");
         tweetRepository.delete(tweet);
-        logger.info("Deleted successfully");
-        return tweet;
+        log.info("Deleted successfully");
+
+        return true;
     }
 
     public List<Tweet> getTweetsByUsername(String username) {
-        List<Tweet> tweets = null;
-        if(userService.isExistingValidUser(username)) {
-            logger.info("getting tweets for username: {}", username);
-            tweets = tweetRepository.findByUsername(username);
+
+        if(!authenticationUtils.getCurrAuthenticatedUser().equals(username))
+            return null;
+
+        log.info("getting tweets for username: {}", username);
+        Optional<List<Tweet>> tweets = tweetRepository.findByUsername(username);
+
+        if(tweets.isEmpty()){
+            return new ArrayList<>();
         } else {
-            logger.info("User with username: {} does not exists", username);
+            return tweets.get();
         }
-        return tweets;
     }
 
-    public Tweet updateTweet(Tweet tweet) throws Exception {
-        Tweet dbTweet = tweetRepository.findById(tweet.getId());
-        if(dbTweet!=null && tweet.getUsername().equals(dbTweet.getUsername())) {
-            logger.info("updating the tweet");
-            dbTweet.setTweet(tweet.getTweet());
-            dbTweet.setTweetTag(tweet.getTweetTag());
-            dbTweet.setUpdated_timeStamp(LocalDateTime.now());
-            tweetRepository.save(dbTweet);
-        } else {
-            logger.info("Tweet does not exists or this user is not the owner of tweet.");
-            throw new Exception("Tweet does not exists or you are not the owner.");
-        }
-        return dbTweet;
+    public void updateTweet(Tweet newTweet) throws Exception {
+
+        Optional<Tweet> dbTweet = tweetRepository.findById(newTweet.getId());
+        if(dbTweet.isEmpty())
+            throw new Exception("Tweet Does not exist.");
+
+        Tweet oldTweet = dbTweet.get();
+        if(!authenticationUtils.getCurrAuthenticatedUser().equals(newTweet.getUsername()) || !oldTweet.getUsername().equals(newTweet.getUsername()))
+            throw new Exception("You are no the owner of this tweet.");
+
+        log.info("updating the tweet");
+        oldTweet.setTweet(newTweet.getTweet());
+        oldTweet.setTweetTag(newTweet.getTweetTag());
+        oldTweet.setUpdated_timeStamp(LocalDateTime.now());
+        tweetRepository.save(oldTweet);
     }
 }

@@ -7,12 +7,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.servlet.http.HttpServletRequest;
 
-@RequestMapping("/")
+@RequestMapping("/admin")
 @RestController
 public class Controller {
 
-    @GetMapping("/")
-    public String controller() {
+    @GetMapping("/test")
+    public String test() {
         return "This is a test endpoint.";
     }
 
